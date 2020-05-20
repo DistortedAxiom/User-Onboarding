@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import * as yup from 'yup'
 import '../App.css';
 
 export default function UserForm(props) {
 
-    const formValue = { name: "", email: "", password: "", terms: false}
+    const formValue = { first_name: "", last_name:"", email: "", password: "", terms: false}
 
     const [user, setUser] = useState(formValue);
 
@@ -28,13 +29,23 @@ export default function UserForm(props) {
             <h1>Form</h1>
             <form onSubmit={(event) => submitHandler(event)}>
                 <div className="form">
-
                         <label>
-                            Name:
+                            First Name:
                             <input
                                 type="text"
-                                name="name"
-                                value={user.name}
+                                name="first_name"
+                                value={user.first_name}
+                                onChange={(event) => changeHandler(event)}
+                            />
+                        </label>
+                    </div>
+                    <div className="form">
+                        <label>
+                            Last Name:
+                            <input
+                                type="text"
+                                name="last_name"
+                                value={user.last_name}
                                 onChange={(event) => changeHandler(event)}
                             />
                         </label>
