@@ -6,7 +6,7 @@ import * as yup from 'yup'
 
 export default function UserForm(props) {
 
-    const formValue = { first_name: '', last_name:'', email: '', password: ''}
+    const formValue = { first_name: '', last_name:'', email: '', password: '', terms: false}
 
     const initialDisabled = true;
 
@@ -15,19 +15,14 @@ export default function UserForm(props) {
         last_name: '',
         email: '',
         password: '',
-        terms: ''
+        terms: '',
     })
 
     const [user, setUser] = useState(formValue);
     const [disabled, setDisabled] = useState(initialDisabled);
 
     const changeHandler = (event) => {
-        if (event.target.type == "checkbox") {
-            const etarget = event.target;
-            setUser({...user.terms, [etarget]: etarget});
-        }
 
-        else {
         const name = event.target.name;
         const value = event.target.value;
 
@@ -49,17 +44,15 @@ export default function UserForm(props) {
 
         setUser({ ...user, [name]: value });
 
-    }
 
     };
 
-    /* const checkboxChange = (event) => {
-        console.log(event.target.type);
-        const etarget = event.target;
-        setUser({...user.terms, [etarget]: etarget});
-    }
+    const checkboxChange = ({ target }) =>
+        setUser(user => (
+            { ...user, [target.name]: !user[target.name] }
+        ));
 
-    */
+
 
     const submitHandler = (event) => {
         event.preventDefault();
@@ -91,7 +84,7 @@ export default function UserForm(props) {
         })
     }, [user])
 
-    console.log(errors);
+    console.log(user);
 
     return (
         <div className="form-container">
@@ -155,7 +148,7 @@ export default function UserForm(props) {
                                 type="checkbox"
                                 name="terms"
                                 checked={user.terms}
-                                onChange={(event)=> changeHandler(event)}
+                                onChange={(event)=> checkboxChange(event)}
                             />
                         </label>
                     </div>
