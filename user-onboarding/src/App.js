@@ -8,7 +8,6 @@ import axios from 'axios';
 function App() {
 
   const [user, setUser] = useState([]);
-  const [updatedUser, setUpdatedUser] = useState([])
 
 
   useEffect(() => {
@@ -24,8 +23,6 @@ function App() {
   const addUser = u => {
     setUser([...user, u])
   }
-
-  console.log(user);
 
   return (
     <div className="App">

@@ -1,22 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import * as yup from 'yup'
 import '../App.css';
 import axios from 'axios';
+import FormSchema from '../validation/FormSchema';
+import * as yup from 'yup'
 
 export default function UserForm(props) {
 
-    const formValue = { first_name: "", last_name:"", email: "", password: "", terms: false}
+    const formValue = { first_name: '', last_name:'', email: '', password: ''}
+
+    const initialDisabled = true;
+
+    const [errors, setErrors] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        terms: ''
+    })
 
     const [user, setUser] = useState(formValue);
+    const [disabled, setDisabled] = useState(initialDisabled);
 
     const changeHandler = (event) => {
-        setUser({ ...user, [event.target.name]: event.target.value });
-    };
+        if (event.target.type == "checkbox") {
+            const etarget = event.target;
+            setUser({...user.terms, [etarget]: etarget});
+        }
 
-    const checkboxChange = (event) => {
-        setUser({...user.terms, [event.target]: event.target})
+        else {
+        const name = event.target.name;
+        const value = event.target.value;
+
+        yup.reach(FormSchema, name)
+        .validate(value)
+        .then(valid => {
+            setErrors({
+                ...errors,
+                [name]: ''
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            setErrors({
+                ...errors,
+                [name]: err.errors[0]
+            })
+        })
+
+        setUser({ ...user, [name]: value });
+
     }
 
+    };
+
+    /* const checkboxChange = (event) => {
+        console.log(event.target.type);
+        const etarget = event.target;
+        setUser({...user.terms, [etarget]: etarget});
+    }
+
+    */
 
     const submitHandler = (event) => {
         event.preventDefault();
@@ -41,9 +84,25 @@ export default function UserForm(props) {
           })
     }
 
+    useEffect(() => {
+        FormSchema.isValid(user).then(valid => {
+            console.log(valid)
+            setDisabled(!valid)
+        })
+    }, [user])
+
+    console.log(errors);
+
     return (
         <div className="form-container">
             <h1>Form</h1>
+            <div className="errors">
+                <div>{errors.first_name}</div>
+                <div>{errors.last_name}</div>
+                <div>{errors.email}</div>
+                <div>{errors.password}</div>
+                <div>{errors.terms}</div>
+            </div>
             <form onSubmit={(event) => submitHandler(event)}>
                 <div className="form">
                         <label>
@@ -96,11 +155,11 @@ export default function UserForm(props) {
                                 type="checkbox"
                                 name="terms"
                                 checked={user.terms}
-                                onChange={(event)=> checkboxChange(event)}
+                                onChange={(event)=> changeHandler(event)}
                             />
                         </label>
                     </div>
-                    <button>Submit</button>
+                    <button disabled={disabled}>Submit</button>
             </form>
         </div>
     )
