@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as yup from 'yup'
 import '../App.css';
+import axios from 'axios';
 
 export default function UserForm(props) {
 
@@ -19,10 +20,26 @@ export default function UserForm(props) {
 
     const submitHandler = (event) => {
         event.preventDefault();
-        props.addUser(user);
+
+        const newUser = {
+            first_name: user.first_name.trim(),
+            last_name: user.last_name.trim(),
+            email: user.email.trim()
+        }
+        postNewUser(newUser);
+        props.addUser(newUser);
         setUser(formValue);
     }
 
+    const postNewUser = (newUser) => {
+        axios.post('https://reqres.in/api/users', newUser)
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+    }
 
     return (
         <div className="form-container">

@@ -5,8 +5,6 @@ const User = props => {
 
     const {user} = props
 
-    console.log(user);
-
     return (
         <div>
             <div>
