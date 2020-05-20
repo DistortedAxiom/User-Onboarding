@@ -11,6 +11,11 @@ export default function UserForm(props) {
         setUser({ ...user, [event.target.name]: event.target.value });
     };
 
+    const checkboxChange = (event) => {
+        setUser({...user.terms, [event.target]: event.target})
+    }
+
+
     const submitHandler = (event) => {
         event.preventDefault();
         props.addUser(user);
@@ -62,8 +67,8 @@ export default function UserForm(props) {
                             <input
                                 type="checkbox"
                                 name="terms"
-                                value={user.terms}
-                                onChange={(event)=> changeHandler(event)}
+                                checked={user.terms}
+                                onChange={(event)=> checkboxChange(event)}
                             />
                         </label>
                     </div>
