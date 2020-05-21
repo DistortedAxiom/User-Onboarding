@@ -6,9 +6,11 @@ import * as yup from 'yup'
 
 export default function UserForm(props) {
 
-    const formValue = { first_name: '', last_name:'', email: '', password: '', terms: false}
+    const formValue = { first_name: '', last_name:'', email: '', password: '', terms: false }
 
     const initialDisabled = true;
+
+    const [user, setUser] = useState(formValue);
 
     const [errors, setErrors] = useState({
         first_name: '',
@@ -18,10 +20,10 @@ export default function UserForm(props) {
         terms: '',
     })
 
-    const [user, setUser] = useState(formValue);
     const [disabled, setDisabled] = useState(initialDisabled);
 
     const changeHandler = (event) => {
+        event.persist();
 
         const name = event.target.name;
         const value = event.target.value;
@@ -31,19 +33,17 @@ export default function UserForm(props) {
         .then(valid => {
             setErrors({
                 ...errors,
-                [name]: ''
-            })
+                [name]: ""
+            });
         })
         .catch(err => {
-            console.log(err);
             setErrors({
                 ...errors,
                 [name]: err.errors[0]
-            })
-        })
+            });
+        });
 
         setUser({ ...user, [name]: value });
-
 
     };
 
@@ -79,12 +79,12 @@ export default function UserForm(props) {
 
     useEffect(() => {
         FormSchema.isValid(user).then(valid => {
-            console.log(valid)
             setDisabled(!valid)
         })
     }, [user])
 
     console.log(user);
+    console.log(errors);
 
     return (
         <div className="form-container">
